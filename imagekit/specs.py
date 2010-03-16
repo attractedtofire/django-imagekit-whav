@@ -39,6 +39,7 @@ class Accessor(object):
         self._fmt = None
         self._obj = obj
         self.spec = spec
+        self.storage = getattr(self.spec, 'storage', self._obj._storage)
 
     def _get_imgfile(self):
         format = self._img.format or 'JPEG'
@@ -63,13 +64,13 @@ class Accessor(object):
         self._img, self._fmt = self.spec.process(Image.open(fp), self._obj)
         # save the new image to the cache
         content = ContentFile(self._get_imgfile().read())
-        self._obj._storage.save(self.name, content)
+        self.storage.save(self.name, content)
 
     def _delete(self):
-        self._obj._storage.delete(self.name)
+        self.storage.delete(self.name)
 
     def _exists(self):
-        return self._obj._storage.exists(self.name)
+        return self.storage.exists(self.name)
 
     @property
     def name(self):
@@ -97,12 +98,12 @@ class Accessor(object):
                 current_count = getattr(self._obj, fieldname)
                 setattr(self._obj, fieldname, current_count + 1)
                 self._obj.save(clear_cache=False)
-        return self._obj._storage.url(self.name)
+        return self.storage.url(self.name)
 
     @property
     def file(self):
         self._create()
-        return self._obj._storage.open(self.name)
+        return self.storage.open(self.name)
 
     @property
     def image(self):
