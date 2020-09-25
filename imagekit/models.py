@@ -48,7 +48,7 @@ class ImageModelBase(ModelBase):
         except ImportError:
             raise ImportError('Unable to load imagekit config module: %s' % \
                 opts.spec_module)
-        for spec in [spec for spec in module.__dict__.values() \
+        for spec in [spec for spec in list(module.__dict__.values()) \
                      if isinstance(spec, type) \
                      and issubclass(spec, specs.ImageSpec) \
                      and spec != specs.ImageSpec]:
@@ -57,7 +57,7 @@ class ImageModelBase(ModelBase):
         setattr(cls, '_ik', opts)
 
 
-class ImageModel(models.Model):
+class ImageModel(models.Model, metaclass=ImageModelBase):
     """ Abstract base class implementing all core ImageKit functionality
 
     Subclasses of ImageModel are augmented with accessors for each defined
@@ -65,7 +65,6 @@ class ImageModel(models.Model):
     storage locations and other options.
 
     """
-    __metaclass__ = ImageModelBase
 
     class Meta:
         abstract = True
@@ -82,10 +81,10 @@ class ImageModel(models.Model):
               self._ik.admin_thumbnail_spec
         else:
             if hasattr(self, 'get_absolute_url'):
-                return u'<a href="%s"><img src="%s"></a>' % \
+                return '<a href="%s"><img src="%s"></a>' % \
                     (escape(self.get_absolute_url()), escape(prop.url))
             else:
-                return u'<a href="%s"><img src="%s"></a>' % \
+                return '<a href="%s"><img src="%s"></a>' % \
                     (escape(self._imgfield.url), escape(prop.url))
     admin_thumbnail_view.short_description = _('Thumbnail')
     admin_thumbnail_view.allow_tags = True

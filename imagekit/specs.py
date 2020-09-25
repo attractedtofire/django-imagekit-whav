@@ -6,7 +6,7 @@ spec found.
 
 """
 import os
-from StringIO import StringIO
+from io import StringIO
 from imagekit import processors
 from imagekit.lib import *
 from imagekit.utils import img_to_fobj

@@ -24,7 +24,7 @@ def flush_cache(apps, options):
             app = cache.get_app(app_label)    
             models = [m for m in cache.get_models(app) if issubclass(m, ImageModel)]
             for model in models:
-                print 'Flushing cache for "%s.%s"' % (app_label, model.__name__)
+                print('Flushing cache for "%s.%s"' % (app_label, model.__name__))
                 for obj in model.objects.all():
                     for spec in model._ik.specs:
                         prop = getattr(obj, spec.name(), None)
@@ -33,4 +33,4 @@ def flush_cache(apps, options):
                         if spec.pre_cache:
                             prop._create()
     else:
-        print 'Please specify on or more app names'
+        print('Please specify on or more app names')

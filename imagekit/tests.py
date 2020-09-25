@@ -64,11 +64,11 @@ class IKTest(TestCase):
         img = self.generate_image()
         path = self.p.image.path
         self.p.save_image('test2.jpeg', ContentFile(img.read()))
-        self.failIf(os.path.isfile(path))
+        self.assertFalse(os.path.isfile(path))
         path = self.p.image.path
         img.seek(0)
         self.p.save_image('test.jpeg', ContentFile(img.read()))
-        self.failIf(os.path.isfile(path))
+        self.assertFalse(os.path.isfile(path))
         img.close()
 
     def test_setup(self):
@@ -96,4 +96,4 @@ class IKTest(TestCase):
         # make sure image file is deleted
         path = self.p.image.path
         self.p.delete()
-        self.failIf(os.path.isfile(path))
+        self.assertFalse(os.path.isfile(path))
